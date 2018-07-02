@@ -4,20 +4,26 @@
 <%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% User usuario = (User) request.getAttribute("User"); %>
-<% List<Access> accesss = (List<Access>)request.getAttribute("Access");%>
+<% User usuario = (User) request.getAttribute("user"); %>
+<% List<Access> accesss=null;
+try{
+ accesss = (List<Access>)request.getAttribute("accesss");
+}
+catch(Exception e){
+	System.out.print("error: "+e);
+}
+Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());%>
 <html lang="es">
 <head>
-    <title>Resources </title>
+    <title>Access </title>
 
     <meta charset="utf-8"/>    
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informes</title>
+<title>Access</title>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
-
 <nav class="top-bar expanded" data-topbar role="navigation">
       <ul class="title-area large-3 medium-4 columns">
 		<li class="name">
@@ -26,35 +32,37 @@
     </ul>
     <div class="top-bar-section">
          <ul class="right">
-         <li class="active"><a class="whiteLink" href="">Users</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/roles')">Roles</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/access')">Access</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/resources')">Resources</a></li>
+         <li ><a class="whiteLink" href="/users">Users</a></li>
+            <li ><a  href="/roles">Roles</a></li>
+            <li class="active"><a  href="/access">Access</a></li>
+            <li><a href="/resources">Resources</a></li>
         
-            <li><a href="/Views/index.jsp">Informes</a></li><li>       
+            <li><a href="/products">Informes</a></li><li>       
             
             <li> <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
             <%= usuario.getName()%>
-            <img src="<%=usuario.getImgUrl()%>" alt="" class="circle responsive-img" style="padding: 5px" width="50px">
+                        <img src="https://image.flaticon.com/icons/png/512/17/17004.png" alt="Error"  style="padding: 5px" width="50px">
             <i class="material-icons right"></i>
 
             <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
                 <ul style="color: black">
 
                     <li style="padding: 0 5px;">
-                        <a style="color: black" onclick="postRedirect('./users/view',{action:'closeSession'})">Cerrar Sesion</a>
+                        <a style="color: black" href="/logout">Logout</a>
                     </li></ul></div></div></li>
+ 			       
  			       
         </ul>
     </div>
 </nav>
 </nav>
+
 <div class="container clearfix">
 
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading">Actions</li>
-        <li><a href="/usuarios">Lista de Usuarios</a></li>
+        <li><a class="whiteLink" onclick="postRedirect('/access')">Lista de accesos</a></li>
     </ul>
 </nav>
 
@@ -63,26 +71,35 @@
 
 <div class="container">
     <br />
-    <span style="font-size: xx-large; font-family: 'Product Sans',Roboto,serif">Accesos</span>
+    <span style="font-size: xx-large">Accesos</span>
     <br />
     <br />
 
-    <a class="waves-effect waves-light btn whiteLink" onclick="postRedirect('/access/add',{action:'redirect'})">Create</a>
+   
+<%if(error==1){ %>
+<h2>No ha iniciado sesion</h2>
+<%}else if(error==2){ %>
+<h2>El usuario no se encuentra registrado </h2>
+   <% }else if(error==3){%>
+   <h2>No existe el recurso</h2>
+   <%}else if(error==4){ %>
+   <h2>No existe el acceso</h2>
+   <%}else{ %>
+    <a class="waves-effect waves-light btn whiteLink" onclick="postRedirect('/access/add',{action:'formulario'})">Nuevo acceso</a>
     <br />
     <br />
-
     <table class="striped responsive-table">
         <thead>
         <tr>
             <td>Rol</td>
-            <td>Acceso</td>
+            <td>Recurso</td>
             
         </tr>
         </thead>
 
         <tbody>
 		
-        <% try{
+        <% 
         	for (int i = 0; i < accesss.size(); i++) {%>
         
         <%  Access access = accesss.get(i); %>
@@ -105,14 +122,12 @@
             <td><%= access.getResource()%></td>
             <td><%= access.getDate()%></td>
             <td>
-                <a class="postLink" onclick="postRedirect('recourses/view',{action:'viewRedirect',key:'<%=key%>'})">Ver</a>
-                | <a class="postLink" onclick="postRedirect('recourses/view',{action:'editRedirect',key:'<%=key%>'})">Editar</a>
-                | <a class="postLink" onclick="postRedirect('recourses/delete',{key:'<%=key%>'})">Borrar</a></td>
+                <a class="postLink" onclick="postRedirect('access/view',{action:'view',key:'<%=key%>'})">Ver</a>
+                | <a class="postLink" onclick="postRedirect('access/view',{action:'edit',key:'<%=key%>'})">Editar</a>
+                | <a class="postLink" onclick="postRedirect('access/delete',{key:'<%=key%>'})">Borrar</a></td>
         </tr>
-        <% }} 
-        catch(Exception e){
-        	
-        }
+        <% } 
+        
         %>
 
         </tbody>
@@ -120,7 +135,7 @@
 
 
     </table>
-
+<% }%>
 </div>
 
 <script>

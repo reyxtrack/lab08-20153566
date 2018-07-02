@@ -7,13 +7,12 @@
   <head>
  <meta charset="utf-8"/>    
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informes</title>
+<title>Recursos</title>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/style.css"/>
 
 </head>
 <body>
-
 <nav class="top-bar expanded" data-topbar role="navigation">
       <ul class="title-area large-3 medium-4 columns">
 		<li class="name">
@@ -22,29 +21,39 @@
     </ul>
     <div class="top-bar-section">
          <ul class="right">
-         <li class="active"><a class="whiteLink" href="">Users</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/roles')">Roles</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/access')">Access</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/resources')">Resources</a></li>
+         <li ><a class="whiteLink" href="/users">Users</a></li>
+            <li ><a  href="/roles">Roles</a></li>
+            <li><a  href="/access">Access</a></li>
+            <li class="active"><a href="/resources">Resources</a></li>
         
-            <li><a href="/Views/index.jsp">Informes</a></li><li>       
+            <li><a href="/products">Informes</a></li><li>       
             
             <li> <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
-            <%= usuario.getName()%>
-            <img src="<%=usuario.getImgUrl()%>" alt="" class="circle responsive-img" style="padding: 5px" width="50px">
+            <%= user.getName()%>
+                        <img src="https://image.flaticon.com/icons/png/512/17/17004.png" alt="Error"  style="padding: 5px" width="50px">
             <i class="material-icons right"></i>
 
             <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
                 <ul style="color: black">
 
                     <li style="padding: 0 5px;">
-                        <a style="color: black" onclick="postRedirect('./users/view',{action:'closeSession'})">Cerrar Sesion</a>
+                        <a style="color: black" href="/logout">Logout</a>
                     </li></ul></div></div></li>
+ 			       
  			       
         </ul>
     </div>
 </nav>
 </nav>
+<div class="container clearfix">
+
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading">Actions</li>
+        <li><a href="/roles">Lista de Roles</a></li>
+    </ul>
+</nav>
+
 <div class="container">
     <br />
     <span style="font-size: xx-large; font-family: 'Product Sans',Roboto,serif">Add a Resource</span>

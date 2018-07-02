@@ -1,7 +1,7 @@
 <%@ page import="model.entity.User" %>
 <%@ page import="model.entity.Resource" %>
 <%  Resource resource= (Resource) request.getAttribute("Resource");
-    User user = (User) request.getAttribute("User");
+    User user = (User) request.getAttribute("user");
     boolean edit = (Boolean) request.getAttribute("edit");
     String action = (String) request.getAttribute("action");
 %>
@@ -10,55 +10,55 @@
 <head>
     <title><%=action%> Ver Recurso</title>
 
-    <meta name="google-signin-client_id" content="746890482047-c734fgap3p3vb6bdoquufn60bsh2p8l9.apps.googleusercontent.com">
-
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-
+    
+    <meta charset="utf-8"/>    
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informes</title>
+<link rel="stylesheet" href="/css/base.css"/>
+<link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
-
-<nav style="background-color: #67c9b3">
-    <div class="nav-wrapper">
-        <a class="whiteLink hide-on-med-and-down" href="../" style="padding: 0 0 0 20px; font-family: 'Product Sans', Roboto, serif; font-size: xx-large">Hotel Services</a>
-
-        <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
-            <%= resource.getUrl()%>
-            <img src="<%=user.getImgUrl()%>" alt="" class="circle responsive-img" style="padding: 5px" width="50px">
-            <i class="material-icons right">arrow_drop_down</i>
-
-            <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
-                <ul style="color: black">
-
-                    <li style="padding: 0 5px;">
-                        <a style="color: black" onclick="postRedirect('./users/view',{action:'closeSession'})">Cerrar Sesion</a>
-                    </li>
-
-                    <li id="cerrar" style="padding: 0 5px; cursor: pointer">
-
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-          <nav class="top-bar expanded" data-topbar role="navigation">
-	<ul class="title-area large-3 medium-4 columns">
+<nav class="top-bar expanded" data-topbar role="navigation">
+      <ul class="title-area large-3 medium-4 columns">
 		<li class="name">
             <h1><a href="/">System</a></h1>
         </li>
     </ul>
     <div class="top-bar-section">
          <ul class="right">
-         <li class="active"><a class="whiteLink" href="">Users</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/roles')">Roles</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/access')">Access</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/resources')">Resources</a></li>
+         <li ><a class="whiteLink" href="/users">Users</a></li>
+            <li ><a  href="/roles">Roles</a></li>
+            <li><a  href="/access">Access</a></li>
+            <li class="active"><a href="/resources">Resources</a></li>
         
-            <li><a href="/Views/index.jsp">Informes</a></li>
+            <li><a href="/products">Informes</a></li><li>       
+            
+            <li> <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
+            <%= user.getName()%>
+                        <img src="https://image.flaticon.com/icons/png/512/17/17004.png" alt="Error"  style="padding: 5px" width="50px">
+            <i class="material-icons right"></i>
+
+            <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
+                <ul style="color: black">
+
+                    <li style="padding: 0 5px;">
+                        <a style="color: black" href="/logout">Logout</a>
+                    </li></ul></div></div></li>
+ 			       
+ 			       
         </ul>
     </div>
 </nav>
+</nav>
+<div class="container clearfix">
+
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading">Actions</li>
+        <li><a href="/roles">Lista de Roles</a></li>
+    </ul>
+</nav>
+
 <div class="container clearfix">
 
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
@@ -96,7 +96,7 @@
 
     <div style="font-size: x-large">
         Url: <%=resource.getUrl()%><br />
-        Email: <%=resource.getStatus()%><br />
+        Estado: <%=resource.getStatus()%><br />
     </div>
 
 
@@ -120,25 +120,6 @@
             userOptions.style.display = "block";
         }
         isUserOptionsEnable = !isUserOptionsEnable;
-    }
-</script>
-<script>
-    function postRedirect(url, postData){
-        var postForm = document.createElement("form");
-        postForm.action = url;
-        postForm.method = "POST";
-        postForm.style.display = "none";
-        for (var key in postData){
-            if (postData.hasOwnProperty(key)){
-                var input = document.createElement("input");
-                input.type = "hidden";
-                input.name = key;
-                input.value = postData[key];
-                postForm.appendChild(input);
-            }
-        }
-        document.body.appendChild(postForm);
-        postForm.submit();
     }
 </script>
 </body>

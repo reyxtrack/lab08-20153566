@@ -13,36 +13,49 @@
 <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
-
-        <nav class="top-bar expanded" data-topbar role="navigation">
-	<ul class="title-area large-3 medium-4 columns">
+<nav class="top-bar expanded" data-topbar role="navigation">
+      <ul class="title-area large-3 medium-4 columns">
 		<li class="name">
             <h1><a href="/">System</a></h1>
         </li>
     </ul>
     <div class="top-bar-section">
          <ul class="right">
-         <li class="active"><a class="whiteLink" href="">Users</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/roles')">Roles</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/access')">Access</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('/resources')">Resources</a></li>
+         <li  class="active"><a class="whiteLink" href="/users">Users</a></li>
+            <li ><a  href="/roles">Roles</a></li>
+            <li><a  href="/access">Access</a></li>
+            <li><a href="/resources">Resources</a></li>
         
-            <li><a href="/Views/index.jsp">Informes</a></li>
+            <li><a href="/products">Informes</a></li><li>       
+            
+            <li> <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
+            <%= user.getName()%>
+                        <img src="https://image.flaticon.com/icons/png/512/17/17004.png" alt="Error"  style="padding: 5px" width="50px">
+            <i class="material-icons right"></i>
+
+            <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
+                <ul style="color: black">
+
+                    <li style="padding: 0 5px;">
+                        <a style="color: black" href="/logout">Logout</a>
+                    </li></ul></div></div></li>
+ 			       
+ 			       
         </ul>
     </div>
+</nav>
 </nav>
 <div class="container clearfix">
 
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading">Actions</li>
-        <li><a href="/index">Lista de Informes</a></li>
+        <li><a href="/roles">Lista de Roles</a></li>
     </ul>
 </nav>
 
-
 <div class="container">
- <span>Add a User</span>
+ <span>Nuevo Usuario</span>
     <br />
     <br />
 
@@ -50,27 +63,18 @@
         <input name="action" value="create" type="hidden">
 
         Name of the User:<br />
-        <input name="userName" placeholder="Name of the User" required><br />
+        <input name="name" placeholder="Name of the User" required><br />
         Email of the User:<br />
-        <input name="userEmail" placeholder="Email" type="email" required>
+        <input name="email" placeholder="Email" type="email" required>
 
-        <div class="row">
-            <div class="col l10 m10">
-                Profile Image link<br />
-                <input name="userImg" value="https://i.stack.imgur.com/34AD2.jpg" placeholder="Link" required oninput="cambiarImg(this)"><br />
-                <br />
-            </div>
-            <div class="col l2 m2">
-                <img id="sourceImg" src="https://i.stack.imgur.com/34AD2.jpg" alt="" width="70px">
-            </div>
-        </div>
+            
 
         Role of the User:<br />
-          <select name="rol" required>
+          <select name="role" required>
           <% 
           List<Role> roleList = (List<Role>) request.getAttribute("Roles");
           for(Role e: roleList){%>
-        <option name="<%=e.getName()%>" ><%=e.getName() %></option>
+        <option value="<%=e.getName()%>" ><%=e.getName() %></option>
         
 	<% }%></select>
 
@@ -80,7 +84,6 @@
     </form>
     <hr />
     <br />
-    <a href="../users" class="waves-effect waves-light btn whiteLink"><i class="material-icons left">arrow_back</i>Go Back</a>
 
 
 </div>

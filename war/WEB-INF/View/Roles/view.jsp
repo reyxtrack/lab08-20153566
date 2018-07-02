@@ -2,50 +2,59 @@
 <%@ page import="model.entity.Role" %>
 
 <%  Role role = (Role) request.getAttribute("Role");
-    User userLogged = (User) request.getAttribute("UserLogged");
-    boolean editAllowed = (Boolean) request.getAttribute("editAllowed");
+    User user = (User) request.getAttribute("User");
+    boolean edit = (Boolean) request.getAttribute("edit");
     String action = (String) request.getAttribute("action");%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title><%=action%> a User - Hotel Services</title>
+    <title> Roles</title>
 
     <meta charset="utf-8"/>    
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Informes</title>
+<title>Roles</title>
 <link rel="stylesheet" href="/css/base.css"/>
 <link rel="stylesheet" href="/css/style.css"/>
 </head>
 <body>
-
-<nav style="background-color: #67c9b3">
-    <div class="nav-wrapper">
-        <a class="whiteLink" href="../" style="padding: 0 0 0 20px; font-family: 'Product Sans', Roboto, serif; font-size: xx-large">Hotel Services</a>
-
-        <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
-            <%= userLogged.getName()%>
-            <img src="<%=userLogged.getImgUrl()%>" alt="" class="circle responsive-img" style="padding: 5px" width="50px">
-            <i class="material-icons right">arrow_drop_down</i>
+<nav class="top-bar expanded" data-topbar role="navigation">
+      <ul class="title-area large-3 medium-4 columns">
+		<li class="name">
+            <h1><a href="/">System</a></h1>
+        </li>
+    </ul>
+    <div class="top-bar-section">
+         <ul class="right">
+         <li ><a class="whiteLink" href="/users">Users</a></li>
+            <li class="active"><a  href="/roles">Roles</a></li>
+            <li><a  href="/access">Access</a></li>
+            <li><a href="/resources">Resources</a></li>
+        
+            <li><a href="/products">Informes</a></li><li>       
+            
+            <li> <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="changeUserOptions()">
+            <%= user.getName()%>
+                        <img src="https://image.flaticon.com/icons/png/512/17/17004.png" alt="Error"  style="padding: 5px" width="50px">
+            <i class="material-icons right"></i>
 
             <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
                 <ul style="color: black">
 
                     <li style="padding: 0 5px;">
-                        <a style="color: black" onclick="postRedirect('/users/view',{action:'closeSession'})">Cerrar Sesion</a>
-                    </li>
-
-                    <li id="cerrar" style="padding: 0 5px; cursor: pointer">
-                        <i class="small material-icons">arrow_drop_up</i>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                        <a style="color: black" href="/logout">Logout</a>
+                    </li></ul></div></div></li>
+ 			       
+ 			       
+        </ul>
+    </div>
+</nav>
+</nav>
 
         <ul id="nav-mobile" class="right">
-            <li><a class="whiteLink" onclick="postRedirect('./users')">Users</a></li>
-            <li class="active"><a class="whiteLink" href="">Roles</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('./access')">Access</a></li>
-            <li><a class="whiteLink" onclick="postRedirect('./resources')">Resources</a></li>
+            <li><a class="whiteLink" href="/users">Users</a></li>
+            <li class="active"><a class="whiteLink" href="/roles">Roles</a></li>
+            <li><a class="whiteLink" href="/access">Access</a></li>
+            <li><a class="whiteLink" href="/resources">Resources</a></li>
         </ul>
     </div>
 </nav>
@@ -56,11 +65,11 @@
     <br />
     <br />
 
-    <% if (editAllowed) {%>
+    <% if (edit) {%>
 
     <form action="./add" method="post">
 
-        <input name="key" value="<%=role.getKey()%>" type="hidden">
+        <input name="key" value="<%=role.getId()%>" type="hidden">
         <input name="action" value="update" type="hidden">
 
         Name:<br />
