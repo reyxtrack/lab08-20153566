@@ -1,8 +1,9 @@
 package controller.access;
 
 import controller.roles.RolesControllerView;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
-import informs.PMF;
+import controller.PMF;
 import model.entity.Access;
 import model.entity.User;
 
@@ -22,18 +23,17 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class AccessControllerIndex extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        
+        PersistenceManager pm= controller.PMF.get().getPersistenceManager();
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
     	int i;
-		if(uGoogle==null){
+    	if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			p.forward(req,  resp);
 		}
 		else{	
-			PersistenceManager pm= PMF.get().getPersistenceManager();
 			String query= "select from "+ model.entity.User.class.getName()+" where email=='"+ uGoogle.getEmail()+"'"+
 							" && status==true";
 			List<model.entity.User> uSearch;
@@ -48,7 +48,7 @@ public class AccessControllerIndex extends HttpServlet {
 		if(uSearch.isEmpty()){
 			i=2;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR",  i);
 			p.forward(req,  resp);
@@ -60,7 +60,7 @@ public class AccessControllerIndex extends HttpServlet {
 		if(rSearch.isEmpty()){
 			i=3;
 			RequestDispatcher p=getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR", i);
 			p.forward(req, resp);
@@ -74,7 +74,7 @@ public class AccessControllerIndex extends HttpServlet {
 			if(aSearch.isEmpty()){
 				i=4;
 				RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
-				req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+				req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 				req.setAttribute("ERROR", i);
 				p.forward(req, resp);
 			}
@@ -82,11 +82,11 @@ public class AccessControllerIndex extends HttpServlet {
 				i=5;
 				req.setAttribute("ERROR", i);
     	try{
-        	User user = UsersControllerView.getUser(uGoogle.getEmail().toString());
+        	User user = Metodos.getUser(uGoogle.getEmail().toString());
             if (user == null) throw new NullPointerException("UsersControllerIndex: El usuario recibido es nulo.");
 
             req.setAttribute("user",user);
-            req.setAttribute("accesss",AccessControllerView.getAllAccess());
+            req.setAttribute("accesss",Metodos.getAccesss());
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
             dispatcher.forward(req,resp);
         

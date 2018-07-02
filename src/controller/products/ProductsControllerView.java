@@ -7,6 +7,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.PMF;
 import controller.roles.RolesControllerView;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Inform;
 import model.entity.Resource;
@@ -40,8 +41,8 @@ public class ProductsControllerView extends HttpServlet {
        
         if (action.equals("edit") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Products/view.jsp");
-            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
-            request.setAttribute("roles",RolesControllerView.getAllRoles());
+            request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("roles",Metodos.getRoles());
             request.setAttribute("inform",inform);
             request.setAttribute("edit",true);
             request.setAttribute("action","Editar");
@@ -53,7 +54,7 @@ public class ProductsControllerView extends HttpServlet {
         }
         else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Products/view.jsp");
-            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
             request.setAttribute("Resource",inform);
            
              request.setAttribute("edit",false);
@@ -77,19 +78,5 @@ public class ProductsControllerView extends HttpServlet {
     }
     
     
-    @SuppressWarnings("unchecked")
-    public static List<Resource> getAllResources(){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        List<Resource> users = (List<Resource>) pm.newQuery("select from " + Resource.class.getName()).execute();
-        pm.close();
-        return users;
-    }
-
-    public static Resource getResource(String key){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        Key k = KeyFactory.stringToKey(key);
-        Resource resource = pm.getObjectById(Resource.class, k);
-        pm.close();
-        return resource;
-    }
+ 
 }

@@ -15,6 +15,7 @@ import com.google.api.server.spi.auth.common.User;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.PMF;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Inform;
 import model.entity.*;
@@ -23,13 +24,13 @@ import model.entity.*;
 public class ProductsControllerIndex extends HttpServlet {
 	
 	@SuppressWarnings("unchecked")
-	public  void doGet(HttpServletRequest req, HttpServletResponse resp ) throws IOException, ServletException{
+	public  void doPost(HttpServletRequest req, HttpServletResponse resp ) throws IOException, ServletException{
 		com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
 		int i;
 		if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Products/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			p.forward(req,  resp);
 		}
@@ -49,7 +50,7 @@ public class ProductsControllerIndex extends HttpServlet {
 		if(uSearch.isEmpty()){
 			i=2;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Products/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR",  i);
 			p.forward(req,  resp);
@@ -61,7 +62,7 @@ public class ProductsControllerIndex extends HttpServlet {
 		if(rSearch.isEmpty()){
 			i=3;
 			RequestDispatcher p=getServletContext().getRequestDispatcher("/WEB-INF/View/Errors/error.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR", i);
 			p.forward(req, resp);
@@ -75,7 +76,7 @@ public class ProductsControllerIndex extends HttpServlet {
 			if(aSearch.isEmpty()){
 				i=4;
 				RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Products/index.jsp");
-				req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+				req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 				req.setAttribute("ERROR", i);
 				p.forward(req, resp);
 			}
@@ -86,7 +87,7 @@ public class ProductsControllerIndex extends HttpServlet {
 				PersistenceManager pm1 = PMF.get().getPersistenceManager();
 				 String query1 = "select from " + Inform.class.getName();
 				 List<model.entity.Inform> informs = (List<model.entity.Inform>)pm1.newQuery(query1).execute();
-				  model.entity.User usuario = UsersControllerView.getUser(uGoogle.getEmail().toString());
+				  model.entity.User usuario = Metodos.getUser(uGoogle.getEmail().toString());
 		            if (usuario == null) throw new NullPointerException("No existe ese usuario");
 		            i=0;
 		           req.setAttribute("ERROR", i); 		;
@@ -95,10 +96,13 @@ public class ProductsControllerIndex extends HttpServlet {
 				p.forward(req, resp);
 			
 			}
-		}
-		}
-	}
-	
+		
+		}}}}
+@SuppressWarnings("unchecked")
+public  void doGet(HttpServletRequest req, HttpServletResponse resp ) throws IOException, ServletException{
+	doPost(req,resp);
+}
+}
 	
 
-}}
+

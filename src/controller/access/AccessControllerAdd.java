@@ -14,6 +14,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.resources.ResourcesControllerView;
 import controller.roles.RolesControllerView;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Access;
 import model.entity.Resource;
@@ -49,9 +50,9 @@ public class AccessControllerAdd extends HttpServlet {
             else if(rq.equals("formulario")){
                 HttpSession sesion= req.getSession();
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/add.jsp");
-                req.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
-                req.setAttribute("Resources", ResourcesControllerView.getAllResources());
-                req.setAttribute("Roles", RolesControllerView.getAllRoles());
+                req.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
+                req.setAttribute("Resources", Metodos.getResources());
+                req.setAttribute("Roles", Metodos.getRoles());
                 dispatcher.forward(req, resp);
             }
 

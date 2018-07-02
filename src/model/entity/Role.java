@@ -30,8 +30,7 @@ public class Role {
     @Persistent
     private boolean status;
 
-    @Persistent
-    private List<Access> accessesList;
+   
 
     public Role(String name, boolean status) {
         this.name = name;
@@ -67,13 +66,7 @@ public class Role {
         this.createDate = createDate;
     }
 
-    public List<Access> getAccessesList() {
-        return accessesList;
-    }
-    public void setAccessesList(List<Access> accessesList) {
-        this.accessesList = accessesList;
-    }
-
+   
 
     @Override
     public String toString() {

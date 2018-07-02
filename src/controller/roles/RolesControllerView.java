@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Role;
 
@@ -34,8 +35,8 @@ public class RolesControllerView extends HttpServlet {
         //Redirige al formulario para editar un Role (role/view)
         if (action.equals("edit") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/view.jsp");
-            request.setAttribute("Role",getRole(key));
-            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Role",Metodos.getRole(key));
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
 
             request.setAttribute("edit",true);
             request.setAttribute("action","edit");
@@ -48,8 +49,8 @@ public class RolesControllerView extends HttpServlet {
         //Redirige al formulario para ver un usuario (user/view)
         else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/view.jsp");
-            request.setAttribute("Role",getRole(key));
-            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Role",Metodos.getRole(key));
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
 
            request.setAttribute("edit",false);
             request.setAttribute("action","View");
@@ -71,19 +72,5 @@ public class RolesControllerView extends HttpServlet {
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static List<Role> getAllRoles(){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        List<Role> users = (List<Role>) pm.newQuery("select from " + Role.class.getName()).execute();
-        pm.close();
-        return users;
-    }
-
-    public static Role getRole(String key){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        Key k = KeyFactory.stringToKey(key);
-        Role role = pm.getObjectById(Role.class, k);
-        pm.close();
-        return role;
-    }
+   
 }

@@ -7,6 +7,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.resources.ResourcesControllerView;
 import controller.roles.RolesControllerView;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Access;
 import model.entity.Resource;
@@ -34,10 +35,10 @@ public class AccessControllerView extends HttpServlet {
 
         if (action.equals("edit") && key!= null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/view.jsp");
-            request.setAttribute("access",AccessControllerView.getAccess(key));
-            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
-            request.setAttribute("Roles", RolesControllerView.getAllRoles());
-            request.setAttribute("Resources", ResourcesControllerView.getAllResources());
+            request.setAttribute("access",Metodos.getAccess(key));
+            request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Roles", Metodos.getRoles());
+            request.setAttribute("Resources", Metodos.getResources());
             request.setAttribute("edit",true);
             request.setAttribute("action","edit");
             
@@ -49,8 +50,8 @@ public class AccessControllerView extends HttpServlet {
         }
         else if (action.equals("view") && key!= null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/view.jsp");
-            request.setAttribute("access",AccessControllerView.getAccess(key));
-            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("access",Metodos.getAccess(key));
+            request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
 
             request.setAttribute("edit",false);
             request.setAttribute("action","view");
@@ -73,19 +74,5 @@ public class AccessControllerView extends HttpServlet {
     }
     
  
-    @SuppressWarnings("unchecked")
-    public static List<Access> getAllAccess(){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        List<Access> access = (List<Access>) pm.newQuery("select from " + Access.class.getName()).execute();
-        pm.close();
-        return access;
-    }
-
-    public static Access getAccess(String key){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        Key k = KeyFactory.stringToKey(key);
-        Access access = pm.getObjectById(Access.class, k);
-        pm.close();
-        return access;
-    }
+  
 }

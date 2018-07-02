@@ -38,7 +38,7 @@ public class ProductsControllerDelete extends HttpServlet {
 
 
 
-        response.sendRedirect("/access");
+        response.sendRedirect("/products");
         
     }
 

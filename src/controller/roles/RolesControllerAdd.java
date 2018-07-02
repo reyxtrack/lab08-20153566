@@ -4,8 +4,11 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import controller.PMF;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Role;
+import model.entity.User;
 
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
@@ -34,7 +37,8 @@ public class RolesControllerAdd extends HttpServlet {
             //Crea
             case "create":
 
-                String name = request.getParameter("roleName");
+                if(!duplicateRole(request.getParameter("roleName"))){
+            	String name = request.getParameter("roleName");
                 Boolean status = Boolean.parseBoolean(request.getParameter("roleStatus"));
 
                 Role role = new Role(name,status);
@@ -43,14 +47,14 @@ public class RolesControllerAdd extends HttpServlet {
                     pm.makePersistent(role);
                 } finally {
                     System.out.println("Role creado");
-                }
+                }}
 
                 break;
 
             case "formulario":
                 
-                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/Add.jsp");
-                request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/add.jsp");
+                request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                 dispatcher.forward(request, response);
                 break;
 
@@ -85,16 +89,33 @@ public class RolesControllerAdd extends HttpServlet {
     }
 
     public static String crearRolDefault(){
-    	Role role;
+    	model.entity.Role role;
+    	PersistenceManager pm= controller.PMF.get().getPersistenceManager();
+		
     	try{
-    		PersistenceManager pm= controller.PMF.get().getPersistenceManager();
-    		role= (Role) pm.newQuery("select from: "+Role.class.getName()+" where name= "+"visitante").execute();
+    		role= (model.entity.Role) pm.newQuery("select from: "+model.entity.Role.class.getName()+" where name==visitante").execute();
     		return role.getName();
     	}
     	catch(Exception e){
     		role=new Role("visitante", true); 
+    		pm.makePersistent(role);
+    		pm.close();
     	return role.getName();
     	}
     }
-    
+    private boolean duplicateRole(String name){
+    	PersistenceManager pm= controller.PMF.get().getPersistenceManager();
+		
+    	
+    	try{
+    		model.entity.Role role=(model.entity.Role)pm.newQuery("select from: "+model.entity.Role.class.getName()+" where name=='"+name.toString()+"'").execute();
+    		pm.close();
+    		return true;       	   
+        } catch (Exception e ){
+            System.out.println("errory :"+ e);
+        	return false;
+        }
+       
+    }    
+
 }

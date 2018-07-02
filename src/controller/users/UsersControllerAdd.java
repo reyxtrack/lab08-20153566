@@ -16,6 +16,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import controller.PMF;
 import controller.roles.RolesControllerAdd;
 import controller.roles.RolesControllerView;
 
@@ -30,7 +31,7 @@ public class UsersControllerAdd extends HttpServlet {
     	PersistenceManager pm = controller.PMF.get().getPersistenceManager();
         
         String action = request.getParameter("action");
-
+        									
         String email = request.getParameter("email");
 
         String name=request.getParameter("name");
@@ -42,7 +43,7 @@ public class UsersControllerAdd extends HttpServlet {
         case "login":
 
         	User useri;
-        		if(!duplicateUser(request.getParameter("id"),pm)){
+        		if(!duplicateUser(request.getParameter("id"))){
         			
                 useri = new User(request.getParameter("id").toString(), request.getParameter("nick").toString().substring(0,request.getParameter("id").indexOf("@")), RolesControllerAdd.crearRolDefault());
                 System.out.println("add       "+ID+" , "+name);
@@ -65,20 +66,21 @@ public class UsersControllerAdd extends HttpServlet {
                 break;
         
             case "formulario":
-                HttpSession sesion= request.getSession();
-                RequestDispatcher d = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/Add.jsp");
-                request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
-                request.setAttribute("Roles", RolesControllerView.getAllRoles());
+            
+                RequestDispatcher d = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/add.jsp");
+                request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
+                request.setAttribute("Roles", Metodos.getRoles());
                 d.forward(request, response);
                 break;
 
             case "create":
-            	User user=new User(email, name, request.getParameter("role"));
+            	if(!duplicateUser(email)){User user=new User(email, name, request.getParameter("role"));
                 try{
             	pm.makePersistent(user);}
                 catch(Exception e){
                 	System.out.println("error "+e);
-                }
+                }}
+            	
             	break;
 
             case "update":
@@ -110,15 +112,12 @@ public class UsersControllerAdd extends HttpServlet {
         //Redirige a doPost
         doPost(request, response);
     }
-    //Revisa si un usuario existe: id -> ID del usuario (ejm. en richard@gmail.com el ID es richard)
-    private boolean duplicateUser(String userID, PersistenceManager pm){
+    private boolean duplicateUser(String userID){
         try{
-            //Intenta buscar en el DataStore un usuario con el ID respectivo.
+        	PersistenceManager pm= PMF.get().getPersistenceManager();
             User usr = pm.getObjectById(User.class, userID);
-            //Si lo encuentra devuelve true (el usuario si existe)
             return true;
         } catch (JDOObjectNotFoundException exc){
-            //Si no lo encuentra, se lanza una Excepción, se captura, y se devuelve false (el usuario no existe)
             return false;
         }
     }

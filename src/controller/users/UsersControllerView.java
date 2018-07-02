@@ -37,9 +37,9 @@ public class UsersControllerView extends HttpServlet {
         //Redirige al formulario para editar un usario (user/view)
         else if (action.equals("edit") && ID != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/view.jsp");
-            request.setAttribute("user",getUser(ID));
-            request.setAttribute("login",getUser(uGoogle.getEmail().toString()));
-            request.setAttribute("Roles", RolesControllerView.getAllRoles());
+            request.setAttribute("user",Metodos.getUser(ID));
+            request.setAttribute("login",Metodos.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Roles", Metodos.getRoles());
             
 
             //Ya que se quiere editar, el atributo permitirEdicion es verdadero. Este atributo se comprueba en el JSP.
@@ -53,8 +53,8 @@ public class UsersControllerView extends HttpServlet {
         }
         else if (action.equals("view") && ID != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/view.jsp");
-            request.setAttribute("user",getUser(ID));
-            request.setAttribute("login",getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("user",Metodos.getUser(ID));
+            request.setAttribute("login",Metodos.getUser(uGoogle.getEmail().toString()));
 
             request.setAttribute("edit",false);
             request.setAttribute("action","View");
@@ -65,9 +65,9 @@ public class UsersControllerView extends HttpServlet {
             }
 
         }
-        //Si no se encontró acción, regresa al inicio
+       
         else {
-            response.getWriter().println("<html><head><script>window.location.replace(\"../\");</script><body></body></html>");
+            response.sendRedirect("index.html");;
         }
 
     }
@@ -76,28 +76,6 @@ public class UsersControllerView extends HttpServlet {
         doPost(request, response);
     }
 
-    public static User getUser(String userID){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        try{
-            User user = pm.getObjectById(User.class, userID);
-            pm.close();
-            return user;
-        } catch (JDOObjectNotFoundException e){
-           System.out.println("no se encuentra usuario");
-           pm.close();
-           return null;
-        }
-    }
 
-
-    @SuppressWarnings("unchecked")
-    static List<User> getAllUsers(){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        List<User> users = (List<User>) pm.newQuery("select from " + User.class.getName()).execute();
-        pm.close();
-        return users;
-    }
-
-   
     
 }

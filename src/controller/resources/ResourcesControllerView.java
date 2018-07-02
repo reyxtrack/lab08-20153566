@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.roles.RolesControllerView;
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Resource;
 
@@ -33,8 +34,8 @@ public class ResourcesControllerView extends HttpServlet {
        
         if (action.equals("edit") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/view.jsp");
-            request.setAttribute("Resource",ResourcesControllerView.getResource(key));
-            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Resource",Metodos.getResource(key));
+            request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
 
 
             request.setAttribute("edit",true);
@@ -48,8 +49,8 @@ public class ResourcesControllerView extends HttpServlet {
         //Redirige al formulario para ver un usuario (user/view)
         else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/view.jsp");
-            request.setAttribute("Resource",ResourcesControllerView.getResource(key));
-            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Resource",Metodos.getResource(key));
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
 
              request.setAttribute("edit",false);
             request.setAttribute("action","View");
@@ -73,19 +74,5 @@ public class ResourcesControllerView extends HttpServlet {
     }
     
     
-    @SuppressWarnings("unchecked")
-    public static List<Resource> getAllResources(){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        List<Resource> users = (List<Resource>) pm.newQuery("select from " + Resource.class.getName()).execute();
-        pm.close();
-        return users;
-    }
-
-    public static Resource getResource(String key){
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        Key k = KeyFactory.stringToKey(key);
-        Resource resource = pm.getObjectById(Resource.class, k);
-        pm.close();
-        return resource;
-    }
+    
 }

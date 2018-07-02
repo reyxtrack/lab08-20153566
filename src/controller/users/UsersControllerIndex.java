@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.roles.RolesControllerView;
-import informs.PMF;
+import controller.PMF;
 
 @SuppressWarnings("serial")
 public class UsersControllerIndex extends HttpServlet {
@@ -26,12 +26,38 @@ public class UsersControllerIndex extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
+    	
     	boolean status;
     	int i;
+	/**	if(uGoogle.getEmail().equals("reyxtrack@gmail.com")){
+			
+			i=5;
+			req.setAttribute("ERROR", i);
+	try{
+      
+    	
+    	System.out.println("1");
+    	User usuario = Metodos.getUser(uGoogle.getEmail());
+    	System.out.println("2");
+        if (usuario == null) throw new NullPointerException("UsersControllerIndex: El usuario recibido es nulo.");
+        System.out.println("3");
+        req.setAttribute("user",usuario);
+        req.setAttribute("users",Metodos.getUsers());
+        System.out.println("4");
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
+       System.out.println(5);
+   	req.setAttribute("ERROR", i);
+        dispatcher.forward(req,resp);
+    System.out.println("6");
+    }
+    catch (Exception e){
+        System.err.println("Error cat. " + e.getMessage());
+        resp.sendRedirect("index.html"); }
+		}**/
 		if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			p.forward(req,  resp);
 		}
@@ -51,7 +77,7 @@ public class UsersControllerIndex extends HttpServlet {
 		if(uSearch.isEmpty()){
 			i=2;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR",  i);
 			p.forward(req,  resp);
@@ -63,7 +89,7 @@ public class UsersControllerIndex extends HttpServlet {
 		if(rSearch.isEmpty()){
 			i=3;
 			RequestDispatcher p=getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
-			req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR", i);
 			p.forward(req, resp);
@@ -77,7 +103,7 @@ public class UsersControllerIndex extends HttpServlet {
 			if(aSearch.isEmpty()){
 				i=4;
 				RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
-				req.setAttribute("user", UsersControllerView.getUser(uGoogle.getEmail()));
+				req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 				req.setAttribute("ERROR", i);
 				p.forward(req, resp);
 			}
@@ -88,12 +114,12 @@ public class UsersControllerIndex extends HttpServlet {
           
         	
         	System.out.println("1");
-        	User usuario = UsersControllerView.getUser(uGoogle.getEmail());
+        	User usuario = Metodos.getUser(uGoogle.getEmail());
         	System.out.println("2");
             if (usuario == null) throw new NullPointerException("UsersControllerIndex: El usuario recibido es nulo.");
             System.out.println("3");
             req.setAttribute("user",usuario);
-            req.setAttribute("users",UsersControllerView.getAllUsers());
+            req.setAttribute("users",Metodos.getUsers());
             System.out.println("4");
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
            System.out.println(5);

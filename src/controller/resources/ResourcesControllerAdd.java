@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.appengine.api.users.UserServiceFactory;
 
+import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Resource;
 
@@ -43,7 +44,7 @@ public class ResourcesControllerAdd extends HttpServlet {
 
                 else if( action.equals("formulario")){
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/add.jsp");
-                request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+                request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                 dispatcher.forward(request, response);
                 }
 
@@ -60,7 +61,7 @@ public class ResourcesControllerAdd extends HttpServlet {
                 }
                 else {
                 	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/index.jsp");
-                    request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+                    request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                     dispatcher.forward(request, response);
                 }
         	
