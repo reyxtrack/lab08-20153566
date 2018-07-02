@@ -3,6 +3,7 @@ package controller.resources;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import controller.roles.RolesControllerView;
 import controller.users.UsersControllerView;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ResourcesControllerView extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         String action = request.getParameter("action");
 
         if (action == null)
@@ -28,13 +30,13 @@ public class ResourcesControllerView extends HttpServlet {
 
         String key = request.getParameter("key");
 
-        //Redirige al formulario para editar un Resource (resource/view)
+       
         if (action.equals("edit") && key != null){
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resource/view.jsp");
-            request.setAttribute("Resource",RolesControllerView.getRole(key));
-            request.setAttribute("UserLogged",UsersControllerView.getUser(request.getSession().getAttribute("userID").toString()));
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/view.jsp");
+            request.setAttribute("Resource",ResourcesControllerView.getResource(key));
+            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
 
-            //Ya que se quiere editar, el atributo permitirEdicion es verdadero. Este atributo se comprueba en el JSP.
+
             request.setAttribute("edit",true);
             request.setAttribute("action","Edit");
             try{
@@ -45,9 +47,9 @@ public class ResourcesControllerView extends HttpServlet {
         }
         //Redirige al formulario para ver un usuario (user/view)
         else if (action.equals("view") && key != null){
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resource/view.jsp");
-            request.setAttribute("Resource",RolesControllerView.getRole(key));
-            request.setAttribute("User",UsersControllerView.getUser(request.getSession().getAttribute("userID").toString()));
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/view.jsp");
+            request.setAttribute("Resource",ResourcesControllerView.getResource(key));
+            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
 
              request.setAttribute("edit",false);
             request.setAttribute("action","View");
@@ -66,16 +68,11 @@ public class ResourcesControllerView extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	doPost(request,response);
+    
     }
     
-    /**
-     * Metodo Estatico getAllResources
-     *
-     * Devuelve un list con todos los Recursos que existen desde cualquier parte del codigo.
-     *
-     * @return          Un List<Resource> con todos los Recursos
-     * */
+    
     @SuppressWarnings("unchecked")
     public static List<Resource> getAllResources(){
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();

@@ -1,62 +1,92 @@
 package model.entity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Key;
+
 @PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class User {
 
-    //El ID del usuario. Este id se obtiene de la direccion de correo; ejm. en richard@gmail.com el ID es richard.
-    //Ya que este ID es único para la dirección de correo, no habran conflictos.
-    @Persistent
-    @PrimaryKey
-    private String id;
-
+   
+	 @Persistent
+	 @PrimaryKey
+	 private String key;
+	 
     //Nombre del Usuario
     @Persistent
     private String name;
 
-    //Dirección de la imagen de perfil del Usuario
     @Persistent
-    private String imgUrl;
+    private boolean gender;
 
-    //Email del usuario
+    public boolean isGender() {
+		return gender;
+	}
+	public void setGender(boolean gender) {
+		this.gender = gender;
+	}
+
+	
     @Persistent
     private String email;
-
-    //Rol del Usuario
+    
     @Persistent
-    private Role role;
+    private String date;
+    
+    @Persistent
+    private String role;
 
-    //Constructor
-    public User(String id, String name, String imgUrl, String email ,Role role){
-        this.id = id;
+    @Persistent
+    private boolean status;
+    
+    public User( String id, String name ,String role){
+        this.key = id;
         this.name = name;
-        this.imgUrl = imgUrl;
-        this.email = email;
+        this.status=true;
+        this.email = id;
         this.role = role;
+        DateFormat format = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
+        date = format.format(Calendar.getInstance().getTime());
+    }
+    public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	public User(){
+    	this.name="Panchito";
+    	this.email="jhk@gjh";
+    	this.role=null;
+    }
+        public String getId() {
+        return this.key;
+    }
+    
+    public String getDate() {
+			return date;
+		}
+		public void setDate(String date) {
+			this.date = date;
+		}
+	public void setId(String id) {
+         this.key=id;
     }
 
-
-    //Getters y Setters
-    public String getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
     }
 
     public String getEmail() {
@@ -66,10 +96,10 @@ public class User {
         this.email = email;
     }
 
-    public Role getRoleID() {
+    public String getRole() {
         return role;
     }
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

@@ -2,6 +2,8 @@ package controller.access;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+
+import model.entity.Access;
 import model.entity.Resource;
 import model.entity.Role;
 
@@ -20,18 +22,20 @@ public class AccessControllerDelete extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-
         try {
             Key k = KeyFactory.stringToKey(request.getParameter("key"));
             try{
-                pm.deletePersistent(pm.getObjectById(Role.class, k));
-            } catch (Exception e){
-               
+                pm.deletePersistent(pm.getObjectById(Access.class, k));
+            } catch (JDOObjectNotFoundException e){
+                System.err.println("Exception catched -> " + e.getMessage());
             }
 
 
-        } catch (Exception e){
+        } catch (NullPointerException e){
+            System.err.println("Exception captured -> " + e.getMessage());
         }
+
+
 
         response.sendRedirect("/access");
         

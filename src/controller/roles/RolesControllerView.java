@@ -2,6 +2,8 @@ package controller.roles;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserServiceFactory;
+
 import controller.users.UsersControllerView;
 import model.entity.Role;
 
@@ -15,26 +17,12 @@ import java.io.IOException;
 import java.util.List;
 
 
-/**
- * RolesControllerView
- *
- * Permite ver los Roles
- *
- * Metodos importantes:
- *
- * public static getAllRoles()
- * Devuelve un List<Role> con todos los roles que existen.
- *
- * public static getRole(String key)
- * Devuelve un Rol dada una key.
- * La key se obtiene usando el metodo getKey() de un objeto Role
- *
- * */
 
 @SuppressWarnings("serial")
 public class RolesControllerView extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         String action = request.getParameter("action");
 
         //Para evitar errores, si no hay ninguna accion, se establece a vacio.
@@ -44,37 +32,34 @@ public class RolesControllerView extends HttpServlet {
         String key = request.getParameter("key");
 
         //Redirige al formulario para editar un Role (role/view)
-        if (action.equals("editRedirect") && key != null){
+        if (action.equals("edit") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/view.jsp");
             request.setAttribute("Role",getRole(key));
-            request.setAttribute("UserLogged",UsersControllerView.getUser(request.getSession().getAttribute("userID").toString()));
+            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
 
-            //Ya que se quiere editar, el atributo permitirEdicion es verdadero. Este atributo se comprueba en el JSP.
-            request.setAttribute("editAllowed",true);
-            request.setAttribute("action","Edit");
+            request.setAttribute("edit",true);
+            request.setAttribute("action","edit");
             try{
-                dispatcher.forward(request,response);
+              dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
-                System.err.println("Exception captured -> " + e.getMessage());
+                System.err.println("error: " + e.getMessage());
             }
         }
         //Redirige al formulario para ver un usuario (user/view)
-        else if (action.equals("viewRedirect") && key != null){
+        else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/view.jsp");
             request.setAttribute("Role",getRole(key));
-            request.setAttribute("UserLogged",UsersControllerView.getUser(request.getSession().getAttribute("userID").toString()));
+            request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
 
-            //Ya que no quiere editar, el atributo permitirEdicion es falso. Este atributo se comprueba en el JSP.
-            request.setAttribute("editAllowed",false);
+           request.setAttribute("edit",false);
             request.setAttribute("action","View");
             try{
                 dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
-                System.err.println("Exception captured -> " + e.getMessage());
+                System.err.println("error: " + e.getMessage());
             }
 
         }
-        //Si no se encontró acción, regresa al inicio
         else {
             response.getWriter().println("<html><head><script>window.location.replace(\"../\");</script><body></body></html>");
         }
@@ -86,13 +71,6 @@ public class RolesControllerView extends HttpServlet {
     }
 
 
-    /**
-     * Metodo Estatico getAllRoles
-     *
-     * Devuelve un list con todos los Roles que existen desde cualquier parte del codigo.
-     *
-     * @return          Un List<Role> con todos los Roles
-     * */
     @SuppressWarnings("unchecked")
     public static List<Role> getAllRoles(){
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();

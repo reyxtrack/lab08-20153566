@@ -19,7 +19,7 @@ public class Role {
 
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
+    private Key id;
 
     @Persistent
     private String name;
@@ -42,8 +42,8 @@ public class Role {
     }
 
     //Getters y Setters
-    public String getKey() {
-        return KeyFactory.keyToString(key);
+    public String getId() {
+        return KeyFactory.keyToString(id);
     }
 
     public String getName() {

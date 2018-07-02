@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.appengine.api.users.UserServiceFactory;
+
 import controller.users.UsersControllerView;
 import model.entity.Resource;
 
@@ -20,7 +22,8 @@ import java.security.KeyFactory;
 public class ResourcesControllerAdd extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
+    	PersistenceManager pm = controller.PMF.get().getPersistenceManager();
 
         String action = request.getParameter("action");
 
@@ -38,10 +41,9 @@ public class ResourcesControllerAdd extends HttpServlet {
 
         }
 
-                else if( action.equals("redirect")){
-                HttpSession sesion= request.getSession();
+                else if( action.equals("formulario")){
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/add.jsp");
-                request.setAttribute("User",UsersControllerView.getUser(sesion.getAttribute("userID").toString()));
+                request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
                 dispatcher.forward(request, response);
                 }
 
@@ -57,9 +59,8 @@ public class ResourcesControllerAdd extends HttpServlet {
                
                 }
                 else {
-                	HttpSession sesion= request.getSession();
                 	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/index.jsp");
-                    request.setAttribute("User",UsersControllerView.getUser(sesion.getAttribute("userID").toString()));
+                    request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
                     dispatcher.forward(request, response);
                 }
         	
@@ -68,13 +69,13 @@ public class ResourcesControllerAdd extends HttpServlet {
             response.sendRedirect("/resources");
         }
         catch (Exception e){
-          System.out.println("huevadas estas hablando");
+          System.out.println("null prro");
         }
 
         
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	doPost(request, response);
     }
 }

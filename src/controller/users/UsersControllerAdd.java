@@ -12,6 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserServiceFactory;
+
+import controller.roles.RolesControllerAdd;
 import controller.roles.RolesControllerView;
 
 import java.io.IOException;
@@ -21,72 +26,69 @@ public class UsersControllerAdd extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-
-        //Accion a realizar
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
+    	PersistenceManager pm = controller.PMF.get().getPersistenceManager();
+        
         String action = request.getParameter("action");
 
+        String email = request.getParameter("email");
 
-
-        //Email del usuario
-        String userEmail = request.getParameter("userEmail");
-
-        //Solo se usa al actualizar un usuario.
-        String prevUserID = request.getParameter("userID");
-
-        //El ID del usuario. Este id se obtiene del email -> en richard@gmail.com el ID es richard
-        String userID;
-        try {
-            userID = userEmail.substring(0,userEmail.indexOf("@"));
-        } catch (NullPointerException e){
-            userID = prevUserID;
-        }
-
-       String userName = request.getParameter("userName");
-        String userImg = request.getParameter("userImg");
-        String userRole = request.getParameter("rol");
+        String name=request.getParameter("name");
+        Role role=null;
+        
+       String ID = request.getParameter("id");
         switch (action) {
             
-        case "logIn":
+        case "login":
 
-                HttpSession misesion = request.getSession();
-
-                crearUsuario(userID, userEmail, userName, userImg, userRole, pm);
-
-                if (!sesionExist(misesion)) {
-
-                    misesion = request.getSession(true);
-                    misesion.setAttribute("userID", userID);
-                    System.out.println("Sesiones: luego de add -> " + misesion.getAttribute("userID"));
-
-                    //La sesion perdurara sin actividad durante 30 min.
-                    misesion.setMaxInactiveInterval(1800);
-                }
-
-                break;
-
-            case "redirect":
-                HttpSession sesion= request.getSession();
-                RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/Add.jsp");
-                request.setAttribute("User",UsersControllerView.getUser(sesion.getAttribute("userID").toString()));
-                request.setAttribute("Roles", RolesControllerView.getAllRoles());
+        	User useri;
+        		if(!duplicateUser(request.getParameter("id"),pm)){
+        			
+                useri = new User(request.getParameter("id").toString(), request.getParameter("nick").toString().substring(0,request.getParameter("id").indexOf("@")), RolesControllerAdd.crearRolDefault());
+                System.out.println("add       "+ID+" , "+name);
+                
+                try{
+        			pm.makePersistent(useri);
+        			pm.close();
+        			System.out.println("hecho");
+        				}
+        		catch(Exception e){
+        			System.out.println("error al persistir usuario");
+        			
+        		}
+        		
+        		
+        		}
+        		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/users");
                 dispatcher.forward(request, response);
+    	
+                break;
+        
+            case "formulario":
+                HttpSession sesion= request.getSession();
+                RequestDispatcher d = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/Add.jsp");
+                request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+                request.setAttribute("Roles", RolesControllerView.getAllRoles());
+                d.forward(request, response);
                 break;
 
-            //Si lo que se quiere es Crear (proviene del formulario)
             case "create":
-                crearUsuario(userID, userEmail, userName, userImg, userRole, pm);
-                break;
+            	User user=new User(email, name, request.getParameter("role"));
+                try{
+            	pm.makePersistent(user);}
+                catch(Exception e){
+                	System.out.println("error "+e);
+                }
+            	break;
 
-            //Si lo que se quiere es actualizar un Usuario
             case "update":
 
-                User user = pm.getObjectById(User.class, prevUserID);
+                User user1 = pm.getObjectById(User.class, ID);
 
-                user.setName(userName);
-                user.setEmail(userEmail);
-                user.setImgUrl(userImg);
-                user.setRole(new Role(userRole,true));
+                user1.setName(name);
+                user1.setEmail(email);
+               
+                user1.setRole(request.getParameter("role"));
 
                 break;
 
@@ -108,13 +110,11 @@ public class UsersControllerAdd extends HttpServlet {
         //Redirige a doPost
         doPost(request, response);
     }
-
     //Revisa si un usuario existe: id -> ID del usuario (ejm. en richard@gmail.com el ID es richard)
-    private boolean userExists(String userID, PersistenceManager pm){
+    private boolean duplicateUser(String userID, PersistenceManager pm){
         try{
             //Intenta buscar en el DataStore un usuario con el ID respectivo.
             User usr = pm.getObjectById(User.class, userID);
-
             //Si lo encuentra devuelve true (el usuario si existe)
             return true;
         } catch (JDOObjectNotFoundException exc){
@@ -123,38 +123,7 @@ public class UsersControllerAdd extends HttpServlet {
         }
     }
 
-    //Comprueba si existe una sesion: sesion -> Objeto HttpSesion que contiene la sesion actual
-    private boolean sesionExist(HttpSession sesion){
-        try{
-            //Intenta buscar el atributo userID dentro de la sesion
-            String a = sesion.getAttribute("userID").toString();
-            System.out.println("Sesion existe -> " + a);
-            //Si lo encuentra, la sesion si existe
-            return true;
-        } catch (NullPointerException e){
-            //Si no, la sesion no existe
-            System.out.println("Sesion no existe");
-            return false;
-        }
-    }
-
-    private void crearUsuario(String userID, String userEmail, String userName, String userImg, String userRole, PersistenceManager pm){
-
-        //Revisa si el usuario con su ID ya tiene un objeto User Persistente almacenado.
-        //Si no existe, crea el objeto de tipo User con los datos que se obtienen del request, y lo hace Persistente.
-        if (!userExists(userID, pm)){
-
-            //El new Role es provisional, hasta que termine la implementacion del CRUD de Role.
-            User user = new User(userID, userName, userImg, userEmail, new Role(userRole,true));
-
-            try{
-                pm.makePersistent(user);
-            } finally {
-                System.out.println("Usuario creado con exito -> " + user);
-            }
-
-        }
-    }
+           
 
 
 }

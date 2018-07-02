@@ -24,7 +24,7 @@ public class ResourcesControllerDelete extends HttpServlet {
         try {
             Key k = KeyFactory.stringToKey(request.getParameter("key"));
             try{
-                pm.deletePersistent(pm.getObjectById(Role.class, k));
+                pm.deletePersistent(pm.getObjectById(Resource.class, k));
             } catch (JDOObjectNotFoundException e){
                 System.err.println("Exception catched -> " + e.getMessage());
             }
@@ -34,7 +34,7 @@ public class ResourcesControllerDelete extends HttpServlet {
             System.err.println("Exception captured -> " + e.getMessage());
         }
 
-        response.sendRedirect("/resource");
+        response.sendRedirect("/resources");
         
     }
 

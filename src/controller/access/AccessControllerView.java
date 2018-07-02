@@ -3,7 +3,9 @@ package controller.access;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 
+import controller.resources.ResourcesControllerView;
 import controller.roles.RolesControllerView;
 import controller.users.UsersControllerView;
 import model.entity.Access;
@@ -22,20 +24,22 @@ import java.util.List;
 public class AccessControllerView extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        String req = request.getParameter("action");
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
+        String action = request.getParameter("action");
 
-                if (req == null)
-            req = "";
+          if (action==null)
+            action = "";
 
         String key = request.getParameter("key");
 
-        if (req.equals("editRedirect") && key != null){
+        if (action.equals("edit") && key!= null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/view.jsp");
-            request.setAttribute("Access",AccessControllerView.getAccess(key));
-            request.setAttribute("User",UsersControllerView.getUser(request.getSession().getAttribute("userID").toString()));
-
+            request.setAttribute("access",AccessControllerView.getAccess(key));
+            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Roles", RolesControllerView.getAllRoles());
+            request.setAttribute("Resources", ResourcesControllerView.getAllResources());
             request.setAttribute("edit",true);
-            request.setAttribute("action","Edit");
+            request.setAttribute("action","edit");
             
             try{
                 dispatcher.forward(request,response);
@@ -43,18 +47,18 @@ public class AccessControllerView extends HttpServlet {
                 System.err.println("Exception captured -> " + e.getMessage());
             }
         }
-        //Redirige al formulario para ver un usuario (user/view)
-        else if (req.equals("viewRedirect") && key != null){
+        else if (action.equals("view") && key!= null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/view.jsp");
-            request.setAttribute("Access",AccessControllerView.getAccess(key));
-            request.setAttribute("UserLogged",UsersControllerView.getUser(request.getSession().getAttribute("userID").toString()));
+            request.setAttribute("access",AccessControllerView.getAccess(key));
+            request.setAttribute("user",UsersControllerView.getUser(uGoogle.getEmail().toString()));
 
-            request.setAttribute("editAllowed",false);
-            request.setAttribute("action","View");
+            request.setAttribute("edit",false);
+            request.setAttribute("action","view");
             try{
                 dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
-                 }
+            System.out.println("error");     
+            }
 
         }
        else {
@@ -65,7 +69,7 @@ public class AccessControllerView extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	doPost(request,response);
     }
     
  

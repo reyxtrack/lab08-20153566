@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.appengine.api.users.UserServiceFactory;
+
 import controller.resources.ResourcesControllerView;
 import controller.roles.RolesControllerView;
 import controller.users.UsersControllerView;
@@ -23,44 +25,46 @@ import java.security.KeyFactory;
 public class AccessControllerAdd extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();
 
-             String request = req.getParameter("action");
-      
-            if(request.equals("create")){
+             String rq = req.getParameter("action");
+             
+             if(rq==null)
+            	 rq="";
+            if(rq.equals("create")){
 
                 String rol = req.getParameter("rol");
                 String resource= req.getParameter("resource");
                 Boolean status = Boolean.parseBoolean(req.getParameter("status"));
-                Access ac = new Access(rol, resource);
+                Access ac = new Access(rol, resource,status);
                 try{
                     pm.makePersistent(ac);
                     System.out.println("ff");
                 } finally {
                     System.out.println("Acceso creado");
                 }
-
             }
 
-            else if(request.equals("redirect")){
+            else if(rq.equals("formulario")){
                 HttpSession sesion= req.getSession();
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/add.jsp");
-                req.setAttribute("User",UsersControllerView.getUser(sesion.getAttribute("userID").toString()));
+                req.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
                 req.setAttribute("Resources", ResourcesControllerView.getAllResources());
                 req.setAttribute("Roles", RolesControllerView.getAllRoles());
                 dispatcher.forward(req, resp);
             }
 
-            else if( request.equals("update")){
+            else if( rq.equals("update")){
 
                 String a = (req.getParameter("key"));
 
                 
-                Resource resource1 = pm.getObjectById(Resource.class, a);
+                Access acceso = pm.getObjectById(Access.class, a);
 
-                resource1.setUrl(req.getParameter("url"));
-                resource1.setStatus(Boolean.parseBoolean(req.getParameter("status")));
-            
+                acceso.setResource(req.getParameter("resource"));
+                acceso.setStatus(Boolean.parseBoolean(req.getParameter("status")));
+                acceso.setRol(req.getParameter("rol"));
 
         }
             else{
@@ -71,14 +75,16 @@ public class AccessControllerAdd extends HttpServlet {
         pm.close();
         try{
             resp.sendRedirect("/access");
+            
         }
          catch (Exception e){
+        	 System.out.println("ERROR");
         }
 
         
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	doPost(request, response);
     }
 }

@@ -2,6 +2,8 @@ package controller.roles;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserServiceFactory;
+
 import controller.users.UsersControllerView;
 import model.entity.Role;
 
@@ -19,7 +21,7 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class RolesControllerAdd extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();
 
         //Accion a realizar
@@ -45,10 +47,10 @@ public class RolesControllerAdd extends HttpServlet {
 
                 break;
 
-            case "redirect":
-                HttpSession sesion= request.getSession();
+            case "formulario":
+                
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/Add.jsp");
-                request.setAttribute("User",UsersControllerView.getUser(sesion.getAttribute("userID").toString()));
+                request.setAttribute("User",UsersControllerView.getUser(uGoogle.getEmail().toString()));
                 dispatcher.forward(request, response);
                 break;
 
@@ -82,5 +84,17 @@ public class RolesControllerAdd extends HttpServlet {
         doPost(request, response);
     }
 
-
+    public static String crearRolDefault(){
+    	Role role;
+    	try{
+    		PersistenceManager pm= controller.PMF.get().getPersistenceManager();
+    		role= (Role) pm.newQuery("select from: "+Role.class.getName()+" where name= "+"visitante").execute();
+    		return role.getName();
+    	}
+    	catch(Exception e){
+    		role=new Role("visitante", true); 
+    	return role.getName();
+    	}
+    }
+    
 }

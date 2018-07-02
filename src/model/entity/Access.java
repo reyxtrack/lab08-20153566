@@ -37,8 +37,9 @@ public class Access {
   private String fecha;
   
   //Constructor 
-  public Access(String rol,String resource){
-    this.resource=resource;
+  public Access(String rol,String resource,boolean status){
+    this.status=status;
+	this.resource=resource;
     this.rol=rol;
     DateFormat format = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
     fecha = format.format(Calendar.getInstance().getTime());
