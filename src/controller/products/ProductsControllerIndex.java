@@ -27,7 +27,7 @@ public class ProductsControllerIndex extends HttpServlet {
 	public  void doPost(HttpServletRequest req, HttpServletResponse resp ) throws IOException, ServletException{
 		com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
 		int i;
-		if(uGoogle==null){
+	if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Products/index.jsp");
 			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
@@ -61,7 +61,7 @@ public class ProductsControllerIndex extends HttpServlet {
 			List<model.entity.Resource> rSearch=(List<model.entity.Resource>) pm.newQuery(query2).execute();
 		if(rSearch.isEmpty()){
 			i=3;
-			RequestDispatcher p=getServletContext().getRequestDispatcher("/WEB-INF/View/Errors/error.jsp");
+			RequestDispatcher p=getServletContext().getRequestDispatcher("/WEB-INF/View/Products/index.jsp");
 			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
 			
 			req.setAttribute("ERROR", i);
@@ -81,20 +81,30 @@ public class ProductsControllerIndex extends HttpServlet {
 				p.forward(req, resp);
 			}
 			else{
+				System.out.println("1");
 				i=5;
 				req.setAttribute("ERROR", i);
+				try{
 				RequestDispatcher p=getServletContext().getRequestDispatcher("/WEB-INF/View/Products/index.jsp");
 				PersistenceManager pm1 = PMF.get().getPersistenceManager();
 				 String query1 = "select from " + Inform.class.getName();
 				 List<model.entity.Inform> informs = (List<model.entity.Inform>)pm1.newQuery(query1).execute();
-				  model.entity.User usuario = Metodos.getUser(uGoogle.getEmail().toString());
+				 
+				 System.out.println("2");
+				 model.entity.User usuario = Metodos.getUser(uGoogle.getEmail().toString());
 		            if (usuario == null) throw new NullPointerException("No existe ese usuario");
 		            i=0;
 		           req.setAttribute("ERROR", i); 		;
 		            req.setAttribute("user", usuario);   
 				 req.setAttribute("informs", informs);
+				 System.out.println("3");
 				p.forward(req, resp);
-			
+				
+		        }
+		        catch (Exception e){
+		        System.out.println("no tiene permmiso:" +e);
+		        	  e.printStackTrace();
+		            resp.sendRedirect("index.html"); }
 			}
 		
 		}}}}

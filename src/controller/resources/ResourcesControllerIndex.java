@@ -52,7 +52,7 @@ public class ResourcesControllerIndex extends HttpServlet {
         resp.sendRedirect("index.html"); }
 		}
 		**/
-    	if(uGoogle==null){
+    /**	if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/index.jsp");
 			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
@@ -107,7 +107,7 @@ public class ResourcesControllerIndex extends HttpServlet {
 				p.forward(req, resp);
 			}
 			else{
-				i=5;
+			**/	i=5;
 				req.setAttribute("ERROR", i);
         try{
         	User user = Metodos.getUser(uGoogle.getEmail().toString());
@@ -125,14 +125,14 @@ public class ResourcesControllerIndex extends HttpServlet {
 
         }
         catch (Exception e){
-        System.out.println("no tiene permmiso");
+        System.out.println("no tiene permmiso:"+ e);
         	  e.printStackTrace();
             resp.sendRedirect("index.html"); }
 			
 		}
     
-		}}}
-	}
+		//}}}
+	
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);

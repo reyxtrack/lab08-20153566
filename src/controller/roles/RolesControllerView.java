@@ -32,28 +32,27 @@ public class RolesControllerView extends HttpServlet {
 
         String key = request.getParameter("key");
 
-        //Redirige al formulario para editar un Role (role/view)
+       
         if (action.equals("edit") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/view.jsp");
             request.setAttribute("Role",Metodos.getRole(key));
             request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
 
             request.setAttribute("edit",true);
-            request.setAttribute("action","edit");
+            request.setAttribute("action","Editar");
             try{
               dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
                 System.err.println("error: " + e.getMessage());
             }
         }
-        //Redirige al formulario para ver un usuario (user/view)
         else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/view.jsp");
             request.setAttribute("Role",Metodos.getRole(key));
             request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
 
            request.setAttribute("edit",false);
-            request.setAttribute("action","View");
+            request.setAttribute("action","Ver");
             try{
                 dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
@@ -62,7 +61,7 @@ public class RolesControllerView extends HttpServlet {
 
         }
         else {
-            response.getWriter().println("<html><head><script>window.location.replace(\"../\");</script><body></body></html>");
+            response.sendRedirect("index.html");;
         }
 
     }

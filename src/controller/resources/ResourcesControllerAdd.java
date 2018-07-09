@@ -15,9 +15,11 @@ import com.google.appengine.api.users.UserServiceFactory;
 import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Resource;
+import model.entity.Role;
 
 import java.io.IOException;
 import java.security.KeyFactory;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class ResourcesControllerAdd extends HttpServlet {
@@ -25,11 +27,12 @@ public class ResourcesControllerAdd extends HttpServlet {
         
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
     	PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-
+    	try{
         String action = request.getParameter("action");
 
         if (action.equals("create")){
-                String url = request.getParameter("name");
+        	if(!duplicateResource(request.getParameter("name"))){
+        		String url = request.getParameter("name");
                 Boolean status = Boolean.parseBoolean(request.getParameter("status"));
 
                 Resource rec = new Resource(url,status);
@@ -39,6 +42,7 @@ public class ResourcesControllerAdd extends HttpServlet {
                 } finally {
                     System.out.println("Recurso creado");
                 }
+        	}
 
         }
 
@@ -46,6 +50,7 @@ public class ResourcesControllerAdd extends HttpServlet {
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/add.jsp");
                 request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                 dispatcher.forward(request, response);
+               
                 }
 
                 else if(action.equals("update")){
@@ -64,7 +69,13 @@ public class ResourcesControllerAdd extends HttpServlet {
                     request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                     dispatcher.forward(request, response);
                 }
-        	
+    	}
+        catch(Exception e){
+        	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/add.jsp");
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
+            dispatcher.forward(request, response);
+            
+        }	
         pm.close();
         try{
             response.sendRedirect("/resources");
@@ -79,4 +90,25 @@ public class ResourcesControllerAdd extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);
     }
+private boolean duplicateResource(String name){
+    	
+    	PersistenceManager pm= controller.PMF.get().getPersistenceManager();		
+    	try{
+    	
+    		@SuppressWarnings("unchecked")
+			List<Resource> resource=(List<Resource>)pm.newQuery("select from "+Resource.class.getName()+" where Url=='"+name+"'").execute();
+    		pm.close();
+    		if(resource.isEmpty())
+    		return false;       	  
+    		else{
+    			return true;
+    		}
+    			
+        } catch (Exception e ){
+            System.out.println("errory :"+ e);
+        	return false;
+        }
+       
+    }    
+
 }

@@ -19,36 +19,42 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 
 @SuppressWarnings("serial")
 public class RolesControllerAdd extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();
 
-        //Accion a realizar
+      try{
         String action = request.getParameter("action");
 
-        if (action == null)
-            action = "";
-
+      
         switch (action){
-            //Crea
+            
             case "create":
 
                 if(!duplicateRole(request.getParameter("roleName"))){
             	String name = request.getParameter("roleName");
                 Boolean status = Boolean.parseBoolean(request.getParameter("roleStatus"));
-
+                
                 Role role = new Role(name,status);
 
                 try{
                     pm.makePersistent(role);
-                } finally {
+                    
+                } 
+                catch(Exception e){
+                System.out.println("errros: "+e);
+                }
+                	finally {
+                
                     System.out.println("Role creado");
-                }}
-
+                }
+                }
                 break;
 
             case "formulario":
@@ -70,16 +76,21 @@ public class RolesControllerAdd extends HttpServlet {
 
 
                 break;
-
+       
         }
-
+      }
+      catch(Exception e){
+    	  RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Roles/add.jsp");
+          request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
+          dispatcher.forward(request, response);
+      }
         pm.close();
         try{
             response.sendRedirect("/roles");
         }
-        //Al redirigr al jsp para crear, se usa RequestDispatcher, y este entra en conflicto con sendRedirect.
-        catch (IllegalStateException e){
-            System.err.println("IllegalStateException: There was a double redirect.");
+      
+        catch (Exception e){
+            System.out.println("error:"+e);
         }
 
     }
@@ -92,25 +103,26 @@ public class RolesControllerAdd extends HttpServlet {
     	model.entity.Role role;
     	PersistenceManager pm= controller.PMF.get().getPersistenceManager();
 		
-    	try{
-    		role= (model.entity.Role) pm.newQuery("select from: "+model.entity.Role.class.getName()+" where name==visitante").execute();
-    		return role.getName();
-    	}
-    	catch(Exception e){
+    	if(!duplicateRole("visitante")){    		    	  	
     		role=new Role("visitante", true); 
     		pm.makePersistent(role);
     		pm.close();
     	return role.getName();
     	}
+    	return "visitante";
     }
-    private boolean duplicateRole(String name){
-    	PersistenceManager pm= controller.PMF.get().getPersistenceManager();
-		
+    private static boolean duplicateRole(String name){
     	
+    	PersistenceManager pm= controller.PMF.get().getPersistenceManager();		
     	try{
-    		model.entity.Role role=(model.entity.Role)pm.newQuery("select from: "+model.entity.Role.class.getName()+" where name=='"+name.toString()+"'").execute();
+    	
+    		List<Role> role=(List<Role>)pm.newQuery("select from "+Role.class.getName()+" where name=='"+name+"'").execute();
     		pm.close();
-    		return true;       	   
+    		if(role.isEmpty())
+    		return false;
+    		else
+    			return true;
+    		
         } catch (Exception e ){
             System.out.println("errory :"+ e);
         	return false;

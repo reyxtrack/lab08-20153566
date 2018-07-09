@@ -1,3 +1,6 @@
+/**
+ * Esta clase procesa las peticiones de vista y edicion de un usuario
+ */
 package controller.users;
 
 import model.entity.User;
@@ -44,7 +47,7 @@ public class UsersControllerView extends HttpServlet {
 
             //Ya que se quiere editar, el atributo permitirEdicion es verdadero. Este atributo se comprueba en el JSP.
             request.setAttribute("edit",true);
-            request.setAttribute("action","edit");
+            request.setAttribute("action","Editar");
             try{
                 dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
@@ -57,7 +60,7 @@ public class UsersControllerView extends HttpServlet {
             request.setAttribute("login",Metodos.getUser(uGoogle.getEmail().toString()));
 
             request.setAttribute("edit",false);
-            request.setAttribute("action","View");
+            request.setAttribute("action","Ver");
             try{
                 dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){

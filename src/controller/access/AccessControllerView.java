@@ -28,9 +28,7 @@ public class AccessControllerView extends HttpServlet {
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         String action = request.getParameter("action");
 
-          if (action==null)
-            action = "";
-
+          try{
         String key = request.getParameter("key");
 
         if (action.equals("edit") && key!= null){
@@ -40,12 +38,12 @@ public class AccessControllerView extends HttpServlet {
             request.setAttribute("Roles", Metodos.getRoles());
             request.setAttribute("Resources", Metodos.getResources());
             request.setAttribute("edit",true);
-            request.setAttribute("action","edit");
+            request.setAttribute("action","Editar");
             
             try{
                 dispatcher.forward(request,response);
-            } catch (javax.servlet.ServletException e){
-                System.err.println("Exception captured -> " + e.getMessage());
+            } catch (Exception e){
+                System.out.println("Error " + e.getMessage());
             }
         }
         else if (action.equals("view") && key!= null){
@@ -54,7 +52,7 @@ public class AccessControllerView extends HttpServlet {
             request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
 
             request.setAttribute("edit",false);
-            request.setAttribute("action","view");
+            request.setAttribute("action","Ver");
             try{
                 dispatcher.forward(request,response);
             } catch (javax.servlet.ServletException e){
@@ -63,10 +61,12 @@ public class AccessControllerView extends HttpServlet {
 
         }
        else {
-            response.getWriter().println("<html><head><script>window.location.replace(\"../\");</script><body></body></html>");
+            response.sendRedirect("/view");
         }
-
-        
+          }
+          catch(Exception e){
+        	  response.sendRedirect("/view");
+          }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

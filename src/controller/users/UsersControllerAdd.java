@@ -29,7 +29,7 @@ public class UsersControllerAdd extends HttpServlet {
 
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
     	PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-        
+        try{
         String action = request.getParameter("action");
         									
         String email = request.getParameter("email");
@@ -95,14 +95,22 @@ public class UsersControllerAdd extends HttpServlet {
                 break;
 
         }
+        }
+        catch(Exception e){
 
+            RequestDispatcher d = getServletContext().getRequestDispatcher("/WEB-INF/View/Users/add.jsp");
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("Roles", Metodos.getRoles());
+            d.forward(request, response);
+           
+        }
         pm.close();
         try{
             response.sendRedirect("/users");
         }
-        //Al redirigr al jsp para crear, se usa RequestDispatcher, y este entra en conflicto con sendRedirect.
+       
         catch (IllegalStateException e){
-            System.err.println("IllegalStateException: There was a double redirect.");
+            System.out.println("error:"+ e);
         }
 
 
@@ -114,8 +122,10 @@ public class UsersControllerAdd extends HttpServlet {
     }
     private boolean duplicateUser(String userID){
         try{
+        	
         	PersistenceManager pm= PMF.get().getPersistenceManager();
-            User usr = pm.getObjectById(User.class, userID);
+           
+        	User usr = pm.getObjectById(User.class, userID);
             return true;
         } catch (JDOObjectNotFoundException exc){
             return false;

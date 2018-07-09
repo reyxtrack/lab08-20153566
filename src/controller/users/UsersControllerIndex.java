@@ -1,3 +1,6 @@
+/**
+ * Esta clase procesa las peticiones de  vista del indice de usuarios
+ */
 package controller.users;
 
 import model.entity.Access;
@@ -54,7 +57,7 @@ public class UsersControllerIndex extends HttpServlet {
         System.err.println("Error cat. " + e.getMessage());
         resp.sendRedirect("index.html"); }
 		}**/
-		if(uGoogle==null){
+		/**if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Users/index.jsp");
 			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
@@ -108,7 +111,7 @@ public class UsersControllerIndex extends HttpServlet {
 				p.forward(req, resp);
 			}
 			else{	
-				i=5;
+			**/	i=5;
 				req.setAttribute("ERROR", i);
     	try{
           
@@ -132,7 +135,7 @@ public class UsersControllerIndex extends HttpServlet {
             resp.sendRedirect("index.html"); }
 
     }
-		}}}}
+		//}}}}
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         doPost(request, response);
     }

@@ -25,11 +25,9 @@ public class Resource {
   @Persistent
   private String Url;
  
-  //Estado del recurso
   @Persistent
   private boolean status;
  
- //Fecha de creacion del recurso
   @Persistent
   private String fecha;
   

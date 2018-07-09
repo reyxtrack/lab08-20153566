@@ -18,9 +18,11 @@ import controller.users.Metodos;
 import controller.users.UsersControllerView;
 import model.entity.Access;
 import model.entity.Resource;
+import model.entity.Role;
 
 import java.io.IOException;
 import java.security.KeyFactory;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class AccessControllerAdd extends HttpServlet {
@@ -29,26 +31,31 @@ public class AccessControllerAdd extends HttpServlet {
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();
 
-             String rq = req.getParameter("action");
+             try{
+            	 String rq = req.getParameter("action");
              
-             if(rq==null)
-            	 rq="";
+             
+            
             if(rq.equals("create")){
-
-                String rol = req.getParameter("rol");
+            	String rol = req.getParameter("rol");
                 String resource= req.getParameter("resource");
-                Boolean status = Boolean.parseBoolean(req.getParameter("status"));
-                Access ac = new Access(rol, resource,status);
-                try{
+            	System.out.println("1");
+                if(!duplicateAccess(rol,resource)){
+            		Boolean status = Boolean.parseBoolean(req.getParameter("status"));
+            		Access ac = new Access(rol, resource,status);
+            		System.out.println("2");
+            		try{
                     pm.makePersistent(ac);
                     System.out.println("ff");
-                } finally {
+            		}
+            		finally {
                     System.out.println("Acceso creado");
+            		}
                 }
             }
 
             else if(rq.equals("formulario")){
-                HttpSession sesion= req.getSession();
+               
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/add.jsp");
                 req.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                 req.setAttribute("Resources", Metodos.getResources());
@@ -72,14 +79,22 @@ public class AccessControllerAdd extends HttpServlet {
             	   RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
                    dispatcher.forward(req, resp);
             }
-
+           }
+             catch(Exception e){
+            	 System.out.println("error:" +e);
+            	 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/add.jsp");
+                 req.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
+                 req.setAttribute("Resources", Metodos.getResources());
+                 req.setAttribute("Roles", Metodos.getRoles());
+                 dispatcher.forward(req, resp);
+             }
         pm.close();
         try{
             resp.sendRedirect("/access");
             
         }
          catch (Exception e){
-        	 System.out.println("ERROR");
+        	 System.out.println("ERROR: "+e);
         }
 
         
@@ -88,4 +103,23 @@ public class AccessControllerAdd extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);
     }
+    private boolean duplicateAccess(String role, String resource){
+    	
+    	PersistenceManager pm= controller.PMF.get().getPersistenceManager();		
+    	try{
+    	
+    		List<Access> access=(List<Access>)pm.newQuery("select from "+Access.class.getName()+" where rol=='"+role+"' && resource=='"+resource+"'").execute();
+    		pm.close();
+    		if(access.isEmpty())
+    			return false;
+    		else 
+    			return true;
+    		   	   
+        } catch (Exception e ){
+            System.out.println("errory :"+ e);
+        	return false;
+        }
+       
+    }    
+
 }

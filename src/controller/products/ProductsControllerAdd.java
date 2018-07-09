@@ -29,14 +29,15 @@ public class ProductsControllerAdd extends HttpServlet {
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
     	PersistenceManager pm = controller.PMF.get().getPersistenceManager();
     	User usuario=Metodos.getUser(uGoogle.getEmail());
-        String action = request.getParameter("action");
+        try{
+    	String action = request.getParameter("action");
 
         if (action.equals("create")){
                 String name = request.getParameter("name");
                 Boolean status = Boolean.parseBoolean(request.getParameter("status"));
                 User user=Metodos.getUser(uGoogle.getEmail());
                 
-                Inform inform= new Inform(user.getName(),user.getRole(), user.getEmail(), request.getParameter("tipo"),request.getParameter("inform"));
+                Inform inform= new Inform(user.getName(),user.getRole(), user.getEmail(), request.getParameter("tipo"),request.getParameter("texto"));
 
                 try{
                     pm.makePersistent(inform);
@@ -45,7 +46,7 @@ public class ProductsControllerAdd extends HttpServlet {
                 }
 
         }
-
+        	
                 else if( action.equals("formulario")){
                 RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Products/add.jsp");
                 request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
@@ -59,26 +60,37 @@ public class ProductsControllerAdd extends HttpServlet {
 
                 String id = (request.getParameter("key"));
 
-                
                 Inform inform1 = pm.getObjectById(Inform.class, id);
 
-                inform1.setInform(request.getParameter("inform"));
+                inform1.setInform(request.getParameter("texto"));
                 inform1.setStatus(Boolean.parseBoolean(request.getParameter("status")));
-                inform1.setType(request.getParameter("type"));
-               
+                inform1.setType(request.getParameter("tipo"));
+                inform1.setEmail(request.getParameter("email"));
+                inform1.setName(request.getParameter("name"));
+                inform1.setRol(request.getParameter("rol"));
+                
                 }
                 else {
                 	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/index.jsp");
                     request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
                     dispatcher.forward(request, response);
                 }
-        	
+        }
+    
+    catch(Exception e){
+    	RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Products/add.jsp");
+        request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
+        request.setAttribute("roles", Metodos.getRoles());                
+        dispatcher.forward(request, response);
+        
+    }
+        
         pm.close();
         try{
-            response.sendRedirect("/resources");
+            response.sendRedirect("/products");
         }
         catch (Exception e){
-          System.out.println("null prro");
+          System.out.println("error: "+ e);
         }
 
         

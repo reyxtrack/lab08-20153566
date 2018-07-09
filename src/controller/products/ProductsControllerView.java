@@ -41,9 +41,9 @@ public class ProductsControllerView extends HttpServlet {
        
         if (action.equals("edit") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Products/view.jsp");
-            request.setAttribute("user",Metodos.getUser(uGoogle.getEmail().toString()));
+            request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
             request.setAttribute("roles",Metodos.getRoles());
-            request.setAttribute("inform",inform);
+            request.setAttribute("Inform",inform);
             request.setAttribute("edit",true);
             request.setAttribute("action","Editar");
             try{
@@ -55,13 +55,14 @@ public class ProductsControllerView extends HttpServlet {
         else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Products/view.jsp");
             request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
-            request.setAttribute("Resource",inform);
+            request.setAttribute("Inform",inform);
            
              request.setAttribute("edit",false);
             request.setAttribute("action","Ver");
             try{
                 dispatcher.forward(request,response);
             } catch (Exception e){
+            	System.out.println("error: "+e);
             }
 
         }

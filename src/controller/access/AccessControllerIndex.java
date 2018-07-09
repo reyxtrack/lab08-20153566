@@ -26,7 +26,7 @@ public class AccessControllerIndex extends HttpServlet {
         PersistenceManager pm= controller.PMF.get().getPersistenceManager();
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
     	int i;
-    	if(uGoogle==null){
+    	/**if(uGoogle==null){
 			i=1;
 			RequestDispatcher p= getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
 			req.setAttribute("user", Metodos.getUser(uGoogle.getEmail()));
@@ -79,14 +79,14 @@ public class AccessControllerIndex extends HttpServlet {
 				p.forward(req, resp);
 			}
 			else{
-				i=5;
+			**/	i=5;
 				req.setAttribute("ERROR", i);
     	try{
         	User user = Metodos.getUser(uGoogle.getEmail().toString());
             if (user == null) throw new NullPointerException("UsersControllerIndex: El usuario recibido es nulo.");
 
             req.setAttribute("user",user);
-            req.setAttribute("accesss",Metodos.getAccesss());
+            req.setAttribute("accesss", Metodos.getAccesss());
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Access/index.jsp");
             dispatcher.forward(req,resp);
         
@@ -98,7 +98,7 @@ public class AccessControllerIndex extends HttpServlet {
             resp.sendRedirect("index.html");
             }
     }
-		}}}}
+		//}}}}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	doPost(request, response);

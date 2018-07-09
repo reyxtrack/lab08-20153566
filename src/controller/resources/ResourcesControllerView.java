@@ -1,4 +1,6 @@
-
+/**
+ * Clase vista de roles, aqui se procesan las petiiones de edicion y vista de un rol
+ */
 package controller.resources;
 
 import com.google.appengine.api.datastore.Key;
@@ -39,30 +41,29 @@ public class ResourcesControllerView extends HttpServlet {
 
 
             request.setAttribute("edit",true);
-            request.setAttribute("action","Edit");
+            request.setAttribute("action","Editar");
             try{
                 dispatcher.forward(request,response);
-            } catch (javax.servlet.ServletException e){
-                System.err.println("Exception captured -> " + e.getMessage());
+            } catch (Exception e){
+                System.out.println("error: " + e.getMessage());
             }
         }
-        //Redirige al formulario para ver un usuario (user/view)
+        
         else if (action.equals("view") && key != null){
             RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/View/Resources/view.jsp");
             request.setAttribute("Resource",Metodos.getResource(key));
             request.setAttribute("User",Metodos.getUser(uGoogle.getEmail().toString()));
 
              request.setAttribute("edit",false);
-            request.setAttribute("action","View");
+            request.setAttribute("action","Ver");
             try{
                 dispatcher.forward(request,response);
             } catch (Exception e){
             }
 
         }
-        //Si no se encontró acción, regresa al inicio
         else {
-            response.getWriter().println("<html><head><script>window.location.replace(\"../\");</script><body></body></html>");
+            response.sendRedirect("index.html");
         }
 
         

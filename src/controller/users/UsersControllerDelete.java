@@ -18,13 +18,17 @@ public class UsersControllerDelete extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	com.google.appengine.api.users.User uGoogle=UserServiceFactory.getUserService().getCurrentUser();
         PersistenceManager pm = controller.PMF.get().getPersistenceManager();
-
+        try{
         String ID = request.getParameter("ID");
         
         try{
             pm.deletePersistent(pm.getObjectById(User.class, ID));
         } catch (JDOObjectNotFoundException e){
             System.err.println("Exception catched -> " + e.getMessage());
+        }
+        }
+        catch(Exception e){
+       	 	response.sendRedirect("/access/add");
         }
 
         response.sendRedirect("/users");

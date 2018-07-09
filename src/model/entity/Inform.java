@@ -1,7 +1,9 @@
 package model.entity;
 
+import java.text.DateFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -19,20 +21,14 @@ import com.google.appengine.api.datastore.KeyFactory;
 public class Inform {
 
  @PrimaryKey
- @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) private Key id;
+ @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY) 
+ private Key id;
 
  
  @Persistent private String rol;
  @Persistent private String inform;
- public String getRol() {
-	return rol;
-}
-
-public void setRol(String rol) {
-	this.rol = rol;
-}
 @Persistent private String type;
- @Persistent private Date fecha;
+ @Persistent private String fecha;
  @Persistent private String user;
  @Persistent private Boolean status;
  @Persistent private String email;
@@ -48,7 +44,13 @@ public void setName(String user) {
 public Boolean getStatus() {
 	return status;
 }
+public String getRol() {
+	return rol;
+}
 
+public void setRol(String rol) {
+	this.rol = rol;
+}
 public String getEmail() {
 	return email;
 }
@@ -61,7 +63,7 @@ public void setStatus(Boolean status) {
 	this.status = status;
 }
 
-public void setFecha(Date fecha) {
+public void setFecha(String fecha) {
 	this.fecha = fecha;
 }
 
@@ -71,7 +73,8 @@ public Inform( String user, String role, String email, String type, String infor
 	this.email=email;
 	this.type = type;
 	this.rol=role;
-	this.fecha = new Date();
+	DateFormat format = new SimpleDateFormat("HH:mm:ss dd/MM/yy");
+    fecha = format.format(Calendar.getInstance().getTime());
 
 }
 
