@@ -61,7 +61,7 @@
 
 <div class="container clearfix">
 
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
+
     <ul class="side-nav">
     <span style="font-size: xx-large; font-family: 'Product Sans',Roboto,serif"><%=action%> a User</span>
     <br />
@@ -104,8 +104,7 @@
 
     <hr />
     <br />
-    <a href="../resources" class="waves-effect waves-light btn whiteLink"><i class="material-icons left">arrow_back</i>Go Back</a>
-
+   
 
 </div>
 

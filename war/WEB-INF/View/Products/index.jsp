@@ -101,13 +101,13 @@ informs = (List<Inform>)request.getAttribute("informs");
         <% try{
         	for (int i = 0; i < informs.size(); i++) {%>
         
-        <% Inform inform = informs.get(i); %>
+        <%  Inform inform = informs.get(i); %>
         <% String key = inform.getId(); %>
         <tr>
        		 <td><%= inform.getName()%></td>
+            <td><%= inform.getEmail()%></td>
             <td><%= inform.getRol()%></td>
-            <td><%= inform.getType()%></td>
-            <td><%= inform.getFecha()%></td>
+            <td><%= inform.getFecha().toString()%></td>
             <td>
                 <a class="postLink" onclick="postRedirect('products/view',{action:'view',key:'<%=key%>'})">Ver</a>
                 | <a class="postLink" onclick="postRedirect('products/view',{action:'edit',key:'<%=key%>'})">Editar</a>
@@ -115,7 +115,7 @@ informs = (List<Inform>)request.getAttribute("informs");
         </tr>
         <% }} 
         catch(Exception e){
-        	System.out.print("error"+ e);
+        	System.out.print("errore"+ e);
         }
         %>
 

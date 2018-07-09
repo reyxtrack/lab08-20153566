@@ -60,7 +60,7 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading">Actions</li>
-        <li><a href="/roles">Lista de Roles</a></li>
+        <li><a href="/resources">Lista de Roles</a></li>
     </ul>
 </nav>
 
@@ -72,6 +72,7 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
     <br />
 
    
+   
 <%if(error==1){ %>
 <h2>No ha iniciado sesion</h2>
 <%}else if(error==2){ %>
@@ -81,10 +82,11 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
    <%}else if(error==4){ %>
    <h2>No existe el acceso</h2>
    <%}else{ %>
-	 <a class="waves-effect waves-light btn whiteLink" href="/resources/add?action=formulario">Nuevo Recurso</a>
+
+		<a class="waves-effect waves-light btn whiteLink" href="/resources/add?action=formulario">Nuevo Recurso</a>
     <br />
     <br />
-    <table class="striped responsive-table">
+	  <table class="striped responsive-table">
         <thead>
         <tr>
             <td>URL</td>
@@ -100,16 +102,7 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
         
         <% Resource resource = resources.get(i); %>
         <% String key = resource.getKey();
-            String[] arr = key.split("");
-            key = "";
-            for (String a : arr) {
-                if (a.equals("\"")){
-                    key += "&quot;";
-                } else{
-                    key += a;
-                }
-            } 
-            
+           
         	
             
         %>

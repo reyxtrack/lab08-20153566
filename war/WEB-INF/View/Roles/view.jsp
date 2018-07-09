@@ -102,9 +102,7 @@
 
     <hr />
     <br />
-    <a href="../roles" class="waves-effect waves-light btn whiteLink"><i class="material-icons left">arrow_back</i>Go Back</a>
-
-
+    
 </div>
 
 <script>

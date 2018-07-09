@@ -75,8 +75,7 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());%>
     <br />
     <br />
 
-   
-<%if(error==1){ %>
+    <%if(error==1){ %>
 <h2>No ha iniciado sesion</h2>
 <%}else if(error==2){ %>
 <h2>El usuario no se encuentra registrado </h2>
@@ -85,9 +84,11 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());%>
    <%}else if(error==4){ %>
    <h2>No existe el acceso</h2>
    <%}else{ %>
-    <a class="waves-effect waves-light btn whiteLink" onclick="postRedirect('/access/add',{action:'formulario'})">Nuevo acceso</a>
+   
+   	<a class="waves-effect waves-light btn whiteLink" onclick="postRedirect('/access/add',{action:'formulario'})">Nuevo acceso</a>
     <br />
     <br />
+   	
     <table class="striped responsive-table">
         <thead>
         <tr>
@@ -104,15 +105,6 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());%>
         
         <%  Access access = accesss.get(i); %>
         <% String key = access.getKey();
-            String[] arr = key.split("");
-            key = "";
-            for (String a : arr) {
-                if (a.equals("\"")){
-                    key += "&quot;";
-                } else{
-                    key += a;
-                }
-            } 
             
         	
             

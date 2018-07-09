@@ -95,5 +95,18 @@
 </div>
 <footer>
 </footer>
+<script>
+    var userOptions = document.getElementById("userOptions");
+    var isUserOptionsEnable = true;
+    document.getElementById("cerrar").addEventListener("click", changeUserOptions());
+    function changeUserOptions() {
+        if (isUserOptionsEnable){
+            userOptions.style.display = "none";
+        } else {
+            userOptions.style.display = "block";
+        }
+        isUserOptionsEnable = !isUserOptionsEnable;
+    }
+</script>
 </body>
 </html>

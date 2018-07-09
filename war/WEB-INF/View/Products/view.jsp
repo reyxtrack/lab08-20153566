@@ -11,8 +11,8 @@ try{
 catch(Exception e){
 	System.out.print("error:"+e);
 }
-Inform inform= (Inform) request.getAttribute("inform");
-User user = (User) request.getAttribute("user");
+Inform inform= (Inform) request.getAttribute("Inform");
+User user = (User) request.getAttribute("User");
     boolean edit = (Boolean) request.getAttribute("edit");
     String action = (String) request.getAttribute("action");
 %>
@@ -45,10 +45,9 @@ User user = (User) request.getAttribute("user");
             <li class="active"><a href="/products">Informes</a></li><li>       
             
             <li> <div class="right valign-wrapper" style="padding: 0 0 0 10px; cursor: pointer;" onclick="options()">
-            <%= user.getName()%>
+            <%=user.getName()%>
                         <img src="https://image.flaticon.com/icons/png/512/17/17004.png" alt="Error"  style="padding: 5px" width="50px">
-            <i class="material-icons right"></i>
-
+            
             <div id="userOptions" style="background-color: white; border:solid 2px #67c9b3; position: absolute; width: auto; display: none;">
                 <ul style="color: black">
 
@@ -72,7 +71,7 @@ User user = (User) request.getAttribute("user");
 
 <div class="container clearfix">
 
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
+
     <ul class="side-nav">
     <span style="font-size: xx-large; font-family: 'Product Sans',Roboto,serif"><%=action%> Inform</span>
     <br />
@@ -85,27 +84,34 @@ User user = (User) request.getAttribute("user");
         <input name="key" value="<%=inform.getId()%>" type="hidden">
         <input name="action" value="update" type="hidden">
 
-        Informante:<br />
+         <font face= "times new roman" size= "3.5" color="#2895A6 " >Informante:<br />
         <input name="name" value="<%= inform.getName()%>" placeholder="url" required><br/>
         <br/>
-        Email:<br />
+         <font face= "times new roman" size= "3.5" color="#2895A6 " >Email:<br />
         <input name="email" value="<%= inform.getEmail()%>" placeholder="url" required><br/>
         <br/>
         
-        Rol:<br />
-        <select name="rol" class="browser-default" value="<%=inform.getRol() %>" select="select" required>
-            <option value="" disabled selected>Seleccione un rol</option>
+        <font face= "times new roman" size= "3.5" color="#2895A6 " > Rol:<br />
+        <select name="rol" class="browser-default" value=<%=inform.getRol()%> select required>
+            
            <% for(Role e: roles){ %>
-            <option value="<%=e.getName()%>">e.getName()</option><%} %>
+            <option name=<%=e.getName()%>><%=e.getName()%></option><%} %>
         </select>
+         <font face= "times new roman" size= "3.5" color="#2895A6 " >Estado: <br />
+        <select name="status" class="browser-default" value="<%=inform.getStatus() %>" select="select" required>
+           
+           <% for(Role e: roles){ %>
+            <option value=<%=e.getStatus()%>><%= e.getStatus()%></option><%} %>
+        </select>
+         
         <font face= "times new roman" size= "3.5" color="#2895A6 " >    Tipo de Informe</font><br>
         <select name="tipo" value="<%=inform.getType()%>" selected required>
-        <option value="Academico">Académico</option>
-        <option value="Extra Academico">Extra Académico </option>
-        <option value="Logistico">Logistico</option>
-        <option value="Problematica">Problematica</option>
-        <option value="Administracion">Administracion</option>
-        <option value="Actividad">Actividad</option>
+        <option name="Academico">Académico</option>
+        <option name="Extra Academico">Extra Académico </option>
+        <option name="Logistico">Logistico</option>
+        <option name="Problematica">Problematica</option>
+        <option name="Administracion">Administracion</option>
+        <option name="Actividad">Actividad</option>
         
         </select>
         <br/>
@@ -124,12 +130,8 @@ User user = (User) request.getAttribute("user");
 
 
  <div class="users view large-9 medium-8 columns content">
-    <h3><%= inform.getId() %></h3>
+    <h3> Informe </h3>
     <table class="vertical-table">
-        <tr>
-            <th scope="row">Id</th>
-            <td><%= inform.getId() %></td>
-        </tr>
         <tr>
             <th scope="row">Nombre del informante</th>
             <td><%= inform.getName() %></td>

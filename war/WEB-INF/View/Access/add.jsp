@@ -91,13 +91,6 @@
     </form>
 
 <script>
-    var sourceImg = document.getElementById("sourceImg");
-
-    function cambiarImg(input) {
-        sourceImg.src = input.value;
-    }
-</script>
-<script>
     var userOptions = document.getElementById("userOptions");
 
     var isUserOptionsEnable = true;

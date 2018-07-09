@@ -1,7 +1,7 @@
 <%@ page import="model.entity.User" %>
 <%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% User usuario = (User) request.getAttribute("user"); %>
+<% User usuario = (User)request.getAttribute("user"); %>
 <% 
 List<User> users=null;
 try{
@@ -58,7 +58,7 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading">Actions</li>
-        <li><a href="/roles">Lista de Usuarios</a></li>
+        <li><a href="/users">Lista de Usuarios</a></li>
     </ul>
 </nav>
 
@@ -68,6 +68,7 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
     <span style="font-size: xx-large; font-family: 'Product Sans',Roboto,serif">&nbsp Users</span>
     <br />
     <br />
+   	  
 
 <%if(error==1){ %>
 <h2>No ha iniciado sesion</h2>
@@ -78,10 +79,10 @@ Integer error = Integer.parseInt(request.getAttribute("ERROR").toString());
    <%}else if(error==4){ %>
    <h2>No existe el acceso</h2>
    <%}else{ %>
-   	    <a class="waves-effect waves-light btn whiteLink"  onclick= "postRedirect('/users/add',{action:'formulario'})">&nbsp Añadir Usuario</a>
-    <br />
-    <br />
    	
+      <a class="waves-effect waves-light btn whiteLink"  onclick= "postRedirect('/users/add',{action:'formulario'})">&nbsp Añadir Usuario</a>
+    <br />
+    <br />
     <table class="striped responsive-table">
         <thead>
             <tr>

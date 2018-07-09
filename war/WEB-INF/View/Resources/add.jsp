@@ -80,8 +80,7 @@
     </form>
     <hr />
     <br />
-    <a href="../resources" class="waves-effect waves-light btn whiteLink"><i class="material-icons left">arrow_back</i>Go Back</a>
-
+   
 
 </div>
 
